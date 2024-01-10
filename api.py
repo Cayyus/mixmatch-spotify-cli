@@ -282,7 +282,7 @@ class SpotifyGET:
 
         return album_list
     
-    def get_users_playlists(self):
+    def get_users_playlists(self) -> List[Dict]:
         """
         Get all the playlists saved by the user
         """
