@@ -13,7 +13,7 @@ First, install:
 
 Then navigate over to the folder using `cd mixmatch-spotify-cli`
 
-Before going forward, you will need a Spotify Developer Key and Secret, so navigate over to https://developer.spotify.com/dashboard and click the create new app button. You can type whatever you want as the name and description, however make sure the **Redirect URI is https://open.spotify.com/ and that Web API is selected on the question "Which API/SDKs are you planning to use?"**, these are crucial and the app won't work without them. 
+Before going forward, you will need a Spotify Developer Key and Secret, so navigate over to https://developer.spotify.com/dashboard and click the create new app button. You can type whatever you want as the name and description, however make sure the **Redirect URI is https://open.spotify.com/ and that Web API is selected on the question "Which API/SDKs are you planning to use?"**, these are crucial and the CLI won't work without them. 
 
 Click on your app in the dashboard and click settings, there you should see your Client ID and the Client Secret, take those and create a new file in the project directory called `creds.env`, and type the Client ID and the Client Secret in this format:
 ```
