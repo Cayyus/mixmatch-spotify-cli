@@ -21,7 +21,7 @@ CLIENT_ID='your client id here'
 CLIENT_SECRET='your client secret here'
 ```
 
-After that you will need to run `pip install -r requirements.txt` and then you can finally run `python mixmatch.py` where all you'll need to do is go to a URL, click Agree, and then just paste the URL you received into the terminal, then you finally start using the CLI. Next time you run the app, you won't need to authenticate, though you might get a error on start, just re-run and you should be fine. 
+After that you will need to run `pip install -r requirements.txt` and then you can finally run `python mixmatch.py` where all you'll need to do is go to the  URL given, click Agree, and then just paste the URL you received into the terminal, then you finally start using the CLI. Next time you run the app, you won't need to authenticate, though you might get a error on start, just re-run and you should be fine. 
 
 Run `python mixmatch.py -h` and a menu like this should pop up:
 ```
