@@ -42,6 +42,8 @@ def print_albums(specific_album=None) -> None:
         album_name, artist, tt_tracks, tracks = album_tuple
         print(f"{album_name} by {artist}")
         print(f"{tt_tracks} tracks")
+        print(f'See Tracks: python mixmatch.py --al "{album_name}"')
+        print()
   elif specific_album is not None:
       parsed_albums = [album for album in [parse_album(album, specific_album) for album in albums] if album is not None]
       if parsed_albums:
