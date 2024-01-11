@@ -11,6 +11,20 @@ username = api.user_data()
 albums = api.get_user_albums()
 playlists = api.get_users_playlists()
 
+def parse_print_playlists() -> None:
+   headers = ['Name', 'Owner']
+   table = []
+   for playlist in playlists:
+       url = playlist['external_urls']
+       name = playlist['name']
+       owner = playlist['owner']
+       owner_name = owner['display_name']
+       owner_link = owner['external_urls']
+       hyper_u = hyperlink(owner_name, owner_link)
+       hyper_pl = hyperlink(name, url)
+       table.append([hyper_pl, hyper_u])
+   print(tabulate(table, headers=headers, tablefmt='grid'))
+
 def parse_album(album, specific_album=None) -> Any:
    if specific_album and album['album_name'] != specific_album:
        return None
