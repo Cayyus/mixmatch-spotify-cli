@@ -1,8 +1,9 @@
 # MixMatch
 
 ## Work in Progress
-Mixmatch is a command-line interface which allows users to interact with Spotify directly from their terminal.
-Features:
+Mixmatch is a command-line interface which allows users to interact with Spotify directly from their terminal. <br>
+
+### Features:
 - See your liked albums
 - See your liked playlists
 - See all your liked songs in a neat, table format
