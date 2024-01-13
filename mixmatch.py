@@ -1,10 +1,12 @@
 from argparse import ArgumentParser, Namespace
-from parse_dict import print_albums, username, parse_print_playlists
+from parsing import print_albums, username, parse_print_playlists
+from track_paginator import st_wrap
 import os
 
 parser = ArgumentParser()
 parser.add_argument('-al', '--albums', nargs='?', const='', help='Print out your saved albums or a specific album if a name is provided')
 parser.add_argument('-pl', '--playlists', help='Print out your saved playlists', action='store_true')
+parser.add_argument('-st', '--liked_songs', help="See all your liked songs", action='store_true')
 
 args: Namespace = parser.parse_args()
 
@@ -22,3 +24,7 @@ if args.albums is not None:
 if args.playlists:
   os.system('cls')
   parse_print_playlists()
+
+if args.liked_songs:
+  os.system('cls')
+  st_wrap()
