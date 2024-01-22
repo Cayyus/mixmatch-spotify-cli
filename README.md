@@ -1,6 +1,6 @@
 # MixMatch
 
-## Work in Progress
+## WIP
 Mixmatch is a command-line interface which allows users to interact with Spotify from the terminal. <br>
 
 ### Features:
