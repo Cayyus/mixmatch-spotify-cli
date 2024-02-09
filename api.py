@@ -16,7 +16,7 @@ timeout = httpx.Timeout(100.0, read=None)
 
 #<------ OAUTH BASE CLASS -------> 
 
-class SpotifyOAuth:
+class SpotifyOAuth(object):
     """
     Base class for OAuth2 authentication with the Spotify Web API, used by child classes UserAuthentication and 
     UserAccessToken
