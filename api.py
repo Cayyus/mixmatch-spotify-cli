@@ -8,6 +8,7 @@ from typing import Any, Optional, Dict, List
 import json
 import base64
 from datetime import datetime
+import webbrowser
 
 load_dotenv('creds.env')
 
@@ -69,8 +70,7 @@ class UserAuthentication(SpotifyOAuth):
         Create the url, send to the user and return redirect uri
         """
         auth_url = f"{self.AUTH_URL}/authorize?" + urlencode(self.auth_code_params)
-        print("Enter the following URL in your web browser to authorise the application:")
-        print(auth_url)
+        webbrowser.open(auth_url)
 
         redirect_url = input("Enter the URL in your browser after you were redirected: ")
         if "https://open.spotify.com/" in redirect_url:
