@@ -4,10 +4,11 @@ import httpx
 from urllib.parse import urlencode
 from dotenv import load_dotenv
 import os
-from typing import Any, Optional, Dict, List
+from typing import Any, Dict, List
 import json
 import base64
 from datetime import datetime
+from pprint import pprint
 import webbrowser
 
 load_dotenv('creds.env')
@@ -71,7 +72,6 @@ class UserAuthentication(SpotifyOAuth):
         """
         auth_url = f"{self.AUTH_URL}/authorize?" + urlencode(self.auth_code_params)
         webbrowser.open(auth_url)
-
         redirect_url = input("Enter the URL in your browser after you were redirected: ")
         if "https://open.spotify.com/" in redirect_url:
             return redirect_url
@@ -200,11 +200,10 @@ class SpotifyGET:
     Class containing all the GET method endpoint requests for the Spotify Web API
     """
 
-    def __init__(self, params: dict = Optional) -> None:
+    def __init__(self) -> None:
         self.API_URL = "https://api.spotify.com/v1"
         self.access_token = UserAccessToken()
         self.auth_headers = {'Authorization': f'Bearer {self.access_token}'}
-        self.params = params 
     
 
     def get_new_releases(self) -> List[Dict]:
@@ -244,7 +243,8 @@ class SpotifyGET:
         """
         Get the albums saved by the user
         """
-        response = httpx.get(f"{self.API_URL}/me/albums", headers=self.auth_headers, params=self.params)
+        params = {'limit': 50}
+        response = httpx.get(f"{self.API_URL}/me/albums", headers=self.auth_headers, params=params)
         data = response.json()
 
         album_list = []
@@ -286,7 +286,8 @@ class SpotifyGET:
         """
         Get all the playlists saved by the user
         """
-        response = httpx.get(f"{self.API_URL}/me/playlists", headers=self.auth_headers, params=self.params)
+        params = {'limit': 50}
+        response = httpx.get(f"{self.API_URL}/me/playlists", headers=self.auth_headers, params=params)
         data = response.json()
 
         playlists_list = []  # List to store playlists as dictionaries
@@ -317,7 +318,7 @@ class SpotifyGET:
 
         return playlists_list
 
-    def user_data(self):
+    def user_data(self) -> str:
         """
         Getting all data related to the user
         """
@@ -325,3 +326,64 @@ class SpotifyGET:
         name = response.json()['display_name']
         return name
     
+    def get_user_saved_tracks(self) -> List[Dict]:
+        """
+        Get all the saved tracks by user
+        """
+        all_items = []
+
+        # Start with the first set of tracks
+        next_tracks = f"{self.API_URL}/me/tracks"
+
+        while next_tracks:
+            response = httpx.get(next_tracks, headers=self.auth_headers)
+            response_data = response.json()
+
+            # Update the next_tracks variable for the next iteration
+            next_tracks = response_data.get('next')
+
+            # Extract the items and append them to the list
+            items = response_data.get('items', [])
+            all_items.extend(items)
+
+        return {'items': all_items}
+
+    def get_featured_playlists(self) -> List[Dict]:
+        """
+        Get featured playlists from Spotify
+        """
+        playlist_lst = []
+
+        params = {
+            'limit': 50
+        }
+        response = httpx.get(f"{self.API_URL}/browse/featured-playlists", headers=self.auth_headers, params=params)
+        data = response.json()
+
+        playlists_data = {}
+        playlists_data['featured_name'] = data['message']
+        playlists_data['total_playlists'] = data['playlists']['total']
+        playlists_data['playlists'] = []
+
+        for playlist in data['playlists']['items']:
+            ind_playlist_data = {}
+            ind_playlist_data['name'] = playlist['name']
+            ind_playlist_data['description'] = playlist['description']
+            ind_playlist_data['url'] = playlist['external_urls']['spotify']
+            ind_playlist_data['api_url'] = playlist['href']
+            ind_playlist_data['tracks'] = playlist['tracks']['total']
+            playlists_data['playlists'].append(ind_playlist_data)
+
+        playlist_lst.append(playlists_data)
+        return playlist_lst
+    
+    def get_featured_tracks(self, pl_arg) -> Dict:
+        """
+        Get the tracks of the featured playlists
+        """
+        featured_playlists = self.get_featured_playlists()
+        for playlist in featured_playlists[0]['playlists']:
+            if pl_arg == playlist['name']:
+                api_url = playlist['api_url']
+                response = httpx.get(api_url, headers=self.auth_headers)
+                return response.json()
