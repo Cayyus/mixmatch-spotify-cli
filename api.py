@@ -387,3 +387,4 @@ class SpotifyGET:
                 api_url = playlist['api_url']
                 response = httpx.get(api_url, headers=self.auth_headers)
                 return response.json()
+    
