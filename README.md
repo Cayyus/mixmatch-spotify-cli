@@ -7,6 +7,7 @@ Mixmatch is a command-line interface which allows users to interact with Spotify
 - See your liked albums
 - See your liked playlists
 - See all your liked songs in a neat, table format
+- See featured playlists and their tracks
 
 ## Get Started
 If you want to try out the tool, follow these instructions:
