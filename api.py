@@ -8,7 +8,6 @@ from typing import Any, Dict, List
 import json
 import base64
 from datetime import datetime
-from pprint import pprint
 import webbrowser
 
 load_dotenv('creds.env')
