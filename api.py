@@ -1,10 +1,14 @@
 #FILE CONTAINING ALL THE REQUESTS MADE TO THE SPOTIFY API, INCLUDING THE AUTHORIZATION PROCESS
 
-import httpx
+
 from urllib.parse import urlencode
 from dotenv import load_dotenv
-import os
 from typing import Any, Dict, List
+from typing import Any, Dict, List
+from datetime import datetime
+
+import httpx
+import os
 import json
 import base64
 from datetime import datetime
