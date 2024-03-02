@@ -11,7 +11,6 @@ import httpx
 import os
 import json
 import base64
-from datetime import datetime
 import webbrowser
 
 load_dotenv('creds.env')
