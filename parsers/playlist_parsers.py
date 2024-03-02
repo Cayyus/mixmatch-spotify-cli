@@ -28,5 +28,5 @@ def parse_featured():
         print(f"Name: {hyperlink(playlist['name'], playlist['url'])}")
         print(f"Description: {playlist['description']}")
         print(f"Tracks: {playlist['tracks']}")
-        print(f'See tracks: python mixmatch.py --fs "{playlist["name"]}"')
+        print(f'See tracks: python mixmatch.py -fs "{playlist["name"]}"')
         print()
