@@ -4,7 +4,6 @@
 from urllib.parse import urlencode
 from dotenv import load_dotenv
 from typing import Any, Dict, List
-from typing import Any, Dict, List
 from datetime import datetime
 
 import httpx
