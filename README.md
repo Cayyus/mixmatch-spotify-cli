@@ -1,13 +1,15 @@
 # MixMatch
-
-## WIP
 Mixmatch is a command-line interface which allows users to interact with Spotify from the terminal. <br>
 
-### Features:
-- See your liked albums
-- See your liked playlists
-- See all your liked songs in a neat, table format
-- See featured playlists and their tracks
+## Features
+| Feature  | Status |
+| ------------- | ------------- |
+| Liked albums  |✅|
+| Liked playlists  |✅|
+| Liked tracks     |✅|
+| Featured playlists from Spotify |✅|
+| Search artists and profile |🚧|
+| Search for albums, tracks, playlists |🚧|
 
 ## Get Started
 If you want to try out the tool, follow these instructions:
@@ -29,6 +31,4 @@ CLIENT_SECRET='your client secret here'
 After that you will need to run `pip install -r requirements.txt` and then you can finally run `python mixmatch.py` where all you'll need to do is go to the  URL given, click Agree, and then just paste the URL you received into the terminal, then you finally start using the CLI. Next time you run the program, you won't need to authenticate, though you might get a error on start (a **KeyError** or a error message which says **the access-token is expired**), just re-run and you should be fine. 
 
 Run `python mixmatch.py -h` and a help menu should pop up, listing out all the commands you can use.
-
-
 
