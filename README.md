@@ -15,7 +15,7 @@ Mixmatch is a command-line interface which allows users to interact with Spotify
 ## Get Started
 **Disclaimer: This CLI only supports Windows 10/11**
 
-If you want to try out the tool, follow these instructions:
+If you want to try out this tool, follow these instructions:
 
 First, install:
 - Python (3.10 or higher)
