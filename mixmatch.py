@@ -4,8 +4,9 @@ import os
 from parsers.parser import username
 from parsers.album_parsers import print_albums
 from parsers.playlist_parsers import parse_featured, parse_print_playlists
-from tables.track_paginator import st_wrap
-from tables.featured_tracktable import fs_wrap
+
+from paginators.track_paginator import st_wrap
+from paginators.featured_tracktable import fs_wrap
 
 parser = ArgumentParser()
 parser.add_argument('-al', '--albums', nargs='?', const='', 
