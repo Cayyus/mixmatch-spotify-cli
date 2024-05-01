@@ -1,11 +1,14 @@
-from api import SpotifyGET
 from tabulate import tabulate
 from typing import Tuple
-from parsers.parser import hyperlink
 
-api = SpotifyGET()
-albums = api.get_user_albums()
+from parsers.parse import api, hyperlink
+from shared.er import hide_error
 
+try:
+    albums = api.get_user_albums()
+except Exception as e:
+    hide_error(str(e))
+    
 def parse_album(album, specific_album=None) -> None | Tuple:
     if specific_album and album['album_name'] != specific_album:
         return None
