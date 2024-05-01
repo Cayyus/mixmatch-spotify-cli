@@ -196,56 +196,35 @@ class UserAccessToken(SpotifyOAuth):
 #<------SPOTIFY API ENDPOINT REQUESTS------>
 
 
-class SpotifyGET:
-    """
-    Class containing all the GET method endpoint requests for the Spotify Web API
-    """
+class SpotifyRequest:
+    """Base class for sending requests to the Spotify API, used by child classes SpotifyGET and SpotifyPOST"""
 
     def __init__(self) -> None:
         self.API_URL = "https://api.spotify.com/v1"
         self.access_token = UserAccessToken()
         self.auth_headers = {'Authorization': f'Bearer {self.access_token}'}
     
-
-    def get_new_releases(self) -> List[Dict]:
+    def get_request(self, url:str, params=None) -> httpx.Response:
         """
-        Get new albums featured on Spotify
+        Send a GET request to the Spotify Web API
         """
-        response = httpx.get(f"{self.API_URL}/browse/new-releases", headers=self.auth_headers, params=self.params)
-        albums = response.json()['albums']['items']
+        return httpx.get(url, headers=self.auth_headers, params=params) if params else httpx.get(url, headers=self.auth_headers)
 
-        all_albums_data = [] 
 
-        for album in albums:
-            album_data = {
-                'album_name': album['name'],
-                'album_url': album['external_urls']['spotify'],
-                'album_api_url': album['href'],
-                'album_release_date': album['release_date'],
-                'album_total_tracks': album['total_tracks'],
-            }
+class SpotifyGET(SpotifyRequest):
+    """
+    Class containing all the GET method endpoint requests for the Spotify Web API
+    """
 
-            album_artists = album['artists']
-            album_data['artists'] = []  # List to store dictionaries for each artist in the album
-
-            for artist in album_artists:
-                artist_data = {
-                    'artist_spotify_url': artist['external_urls']['spotify'],
-                    'artist_api_url': artist['href'],
-                    'artist_name': artist['name'],
-                }
-                album_data['artists'].append(artist_data)
-
-            all_albums_data.append(album_data)
-
-        return all_albums_data
+    def __init__(self) -> None:
+        super().__init__()
     
     def get_user_albums(self) -> List[Dict]:
         """
         Get the albums saved by the user
         """
         params = {'limit': 50}
-        response = httpx.get(f"{self.API_URL}/me/albums", headers=self.auth_headers, params=params)
+        response = self.get_request(f"{self.API_URL}/me/albums", params=params)
         data = response.json()
 
         album_list = []
@@ -288,7 +267,7 @@ class SpotifyGET:
         Get all the playlists saved by the user
         """
         params = {'limit': 50}
-        response = httpx.get(f"{self.API_URL}/me/playlists", headers=self.auth_headers, params=params)
+        response = self.get_request(f"{self.API_URL}/me/playlists", params=params)
         data = response.json()
 
         playlists_list = []  # List to store playlists as dictionaries
@@ -323,21 +302,26 @@ class SpotifyGET:
         """
         Getting all data related to the user
         """
-        response = httpx.get(f"{self.API_URL}/me", headers=self.auth_headers)
-        name = response.json()['display_name']
-        return name
-    
+        try:
+            response = self.get_request(f"{self.API_URL}/me")
+            name = response.json()['display_name']
+            return name
+        except KeyError:
+            subprocess.run(['python', 'mixmatch.py'])
+
+            
     def get_user_saved_tracks(self) -> List[Dict]:
         """
         Get all the saved tracks by user
         """
+
         all_items = []
 
         # Start with the first set of tracks
         next_tracks = f"{self.API_URL}/me/tracks"
 
         while next_tracks:
-            response = httpx.get(next_tracks, headers=self.auth_headers)
+            response = self.get_request(next_tracks)
             response_data = response.json()
 
             # Update the next_tracks variable for the next iteration
@@ -358,7 +342,7 @@ class SpotifyGET:
         params = {
             'limit': 50
         }
-        response = httpx.get(f"{self.API_URL}/browse/featured-playlists", headers=self.auth_headers, params=params)
+        response = self.get_request(f"{self.API_URL}/browse/featured-playlists", params=params)
         data = response.json()
 
         playlists_data = {}
@@ -386,7 +370,7 @@ class SpotifyGET:
         for playlist in featured_playlists[0]['playlists']:
             if pl_arg == playlist['name']:
                 api_url = playlist['api_url']
-                response = httpx.get(api_url, headers=self.auth_headers)
+                response = self.get_request(api_url)
                 return response.json()
 
     def get_artist(self, q) -> Dict:
