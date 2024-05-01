@@ -1,12 +1,14 @@
 from argparse import ArgumentParser, Namespace
 import os
 
-from parsers.parser import username
+from parsers.parse import username
 from parsers.album_parsers import print_albums
 from parsers.playlist_parsers import parse_featured, parse_print_playlists
+from parsers.artist_parser import parse_artist
 
 from paginators.track_paginator import st_wrap
 from paginators.featured_tracktable import fs_wrap
+
 
 parser = ArgumentParser()
 parser.add_argument('-al', '--albums', nargs='?', const='', 
@@ -15,11 +17,15 @@ parser.add_argument('-pl', '--playlists', help='Print out your saved playlists',
 parser.add_argument('-st', '--liked_songs', help="See all your liked songs", action='store_true')
 parser.add_argument('-fs', '--featured_playlists', help='Discover playlists featured by Spotify', 
                     nargs="?", const='')
+parser.add_argument('-art', '--artist', help='Get information on a artist', nargs='?', const='')
 
 args: Namespace = parser.parse_args()
 
 os.system('cls')
-print(f"Hello {username}")
+if username is not None:
+  print(f"Hello there, {username}.")
+else:
+  print("Hello there!")
 print("Type python mixmatch.py -h to see all commands.")
 
 if args.albums is not None:
@@ -38,9 +44,16 @@ if args.liked_songs:
   st_wrap()
 
 if args.featured_playlists is not None:
-    os.system('cls')
-    if args.featured_playlists != '':
-        fs_wrap(args.featured_playlists)
-    else:
-        parse_featured()
+  os.system('cls')
+  if args.featured_playlists != '':
+      fs_wrap(args.featured_playlists)
+  else:
+      parse_featured()
+
+if args.artist is not None:
+  os.system('cls')
+  if args.artist != '':
+    parse_artist(args.artist)
+  else:
+    print('Please type a artist name using mixmatch.py --art "artist name"')
 
