@@ -1,8 +1,9 @@
-from api import SpotifyGET
 import curses
 from tabulate import tabulate
 
-api = SpotifyGET()
+from parsers.parse import api
+from shared.er import hide_error
+
 
 def create_table(stdscr, headers, data, page_size=10):
     current_page = 0
@@ -36,7 +37,10 @@ def create_table(stdscr, headers, data, page_size=10):
 
 
 def parse_featured_tracks(stdscr, pl_arg):
-    data = api.get_featured_tracks(pl_arg)
+    try:
+        data = api.get_featured_tracks(pl_arg)
+    except Exception as e:
+        hide_error(str(e))
     tracks = data['tracks']['items']
     parsed_data = []
 
@@ -54,3 +58,4 @@ def parse_featured_tracks(stdscr, pl_arg):
 
 def fs_wrap(pl_arg):
     curses.wrapper(parse_featured_tracks, pl_arg)
+
