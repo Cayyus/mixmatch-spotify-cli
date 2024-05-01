@@ -388,4 +388,63 @@ class SpotifyGET:
                 api_url = playlist['api_url']
                 response = httpx.get(api_url, headers=self.auth_headers)
                 return response.json()
-    
+
+    def get_artist(self, q) -> Dict:
+        """
+        Get information of an artist, gets the artist with the highest follower count
+        """
+        highest_count = 0
+        artis = None
+
+        artist_dict = {}
+
+        q_params = {'q': q, 'type': 'artist', 'limit': 2}
+        response = self.get_request(f"{self.API_URL}/search", params=q_params)
+        artist = response.json()['artists']
+        items = artist['items']
+        for item in items:
+            follower_count = item['followers']['total']
+            if follower_count > highest_count:
+                highest_count = follower_count
+                artis = item
+
+        name = artis['name']
+        url = artis['external_urls']['spotify']
+        followers = artis['followers']['total']
+        popularity = artis['popularity']
+        genres = artis['genres']
+
+        artist_dict['name'] = name
+        artist_dict['url'] = url
+        artist_dict['followers'] = '{:,}'.format(followers)
+        artist_dict['popularity'] = popularity
+        artist_dict['genres'] = [genre.capitalize() for genre in genres]
+
+        # Fetch top tracks
+        top_tracks_response = self.get_request(f"{self.API_URL}/artists/{artis['id']}/top-tracks")
+        tracks = top_tracks_response.json()['tracks']
+        artist_tracks = []
+        for track in tracks:
+            track_dict = {}
+            track_dict['name'] = track['name']
+            track_dict['url'] = track['external_urls']['spotify']
+            track_dict['album_name'] = track['album']['name']
+            track_dict['album_link'] = track['album']['external_urls']['spotify']
+            track_dict['rel_date'] = track['album']['release_date'].split('-')[0]
+            artist_tracks.append(track_dict)
+
+        artist_dict['tracks'] = artist_tracks
+
+        #Fetch related artists
+        related_artists_response = self.get_request(f"{self.API_URL}/artists/{artis['id']}/related-artists")
+        related_artists = related_artists_response.json()['artists']
+        related_artists_ls = []
+        for related_artist in related_artists:
+            related_artist_dict = {}
+            related_artist_dict['name'] = related_artist['name']
+            related_artist_dict['url'] = related_artist['external_urls']['spotify']
+            related_artists_ls.append(related_artist_dict)
+        
+        artist_dict['related_artists'] = related_artists_ls
+
+        return artist_dict
