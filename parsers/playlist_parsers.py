@@ -1,12 +1,13 @@
-from api import SpotifyGET
 from tabulate import tabulate
-from parsers.parser import hyperlink
 
-api = SpotifyGET()
+from parsers.parse import api, hyperlink
+from shared.er import hide_error
 
-saved_playlists = api.get_users_playlists()
-featured_playlists = api.get_featured_playlists()
-
+try:
+    saved_playlists = api.get_users_playlists()
+    featured_playlists = api.get_featured_playlists()
+except Exception as e:
+    hide_error(str(e))
 
 def parse_print_playlists() -> None: 
    headers = ['Name', 'Owner']
@@ -24,9 +25,9 @@ def parse_print_playlists() -> None:
 
 
 def parse_featured():
-    for playlist in featured_playlists[0]['playlists']:
-        print(f"Name: {hyperlink(playlist['name'], playlist['url'])}")
-        print(f"Description: {playlist['description']}")
-        print(f"Tracks: {playlist['tracks']}")
-        print(f'See tracks: python mixmatch.py -fs "{playlist["name"]}"')
+    for pl in featured_playlists[0]['playlists']:
+        print(f"Name: {hyperlink(pl['name'], pl['url'])}")
+        print(f"Description: {pl['description']}")
+        print(f"Tracks: {pl['tracks']}")
+        print(f'See tracks: python mixmatch.py -fs "{pl["name"]}"')
         print()
