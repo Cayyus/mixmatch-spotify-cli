@@ -1,9 +1,14 @@
 import curses
 from tabulate import tabulate
-from api import SpotifyGET
 
-api = SpotifyGET()
-data = api.get_user_saved_tracks()
+from parsers.parse import api
+from shared.er import hide_error
+
+try:
+    data = api.get_user_saved_tracks()
+except Exception as e:
+    hide_error(str(e))
+
 
 class TrackTable:
     def __init__(self, stdscr, data):
