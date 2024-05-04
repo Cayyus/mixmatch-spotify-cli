@@ -28,11 +28,9 @@ class SpotifyOAuth(object):
         self.AUTH_URL = "https://accounts.spotify.com"
         self.CLIENT_ID = os.environ.get('CLIENT_ID')
         self.CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
-
-
+        self.timeout = httpx.Timeout(360.0, read=None)
 
 #<------ USER AUTHENTICATION -------> 
-
 
 class UserAuthentication(SpotifyOAuth):
     """
@@ -92,9 +90,7 @@ class UserAuthentication(SpotifyOAuth):
     def __repr__(self) -> str:
         return self.get_code()
 
-
 #<------ ACCESS TOKEN -------> 
-
 
 class UserAccessToken(SpotifyOAuth):
     """
@@ -118,17 +114,18 @@ class UserAccessToken(SpotifyOAuth):
         """
         Check if the access token is already present and if it is valid
         """
+
         with open('tokens.json', 'r') as file:
             data = json.load(file)
             file.close()
         
-        token = data['access_token']
+        token = data.get('access_token', '')
         if token == '':
             self.get_access_token()
         else:
             #Check if the token is valid by sending a simple API request
             auth_headers_valid = {'Authorization': f'Bearer {token}'}
-            response = httpx.get("https://api.spotify.com/v1/me", headers=auth_headers_valid)
+            response = httpx.get("https://api.spotify.com/v1/me", headers=auth_headers_valid, timeout=self.timeout)
             if response.status_code == 401:
                 self.get_new_access_token()
             else:
@@ -140,7 +137,7 @@ class UserAccessToken(SpotifyOAuth):
         """
         Get a one-hour access token to use API endpoints as well as a refresh token
         """
-        response = httpx.post(url=f"{self.AUTH_URL}/api/token", headers=self.access_token_headers, data=self.access_token_data, timeout=timeout)
+        response = httpx.post(url=f"{self.AUTH_URL}/api/token", headers=self.access_token_headers, data=self.access_token_data, timeout=self.timeout)
         token = response.json()['access_token']
         refresh_token = response.json()['refresh_token']
         json_data = {
@@ -173,7 +170,7 @@ class UserAccessToken(SpotifyOAuth):
             'refresh_token': refresh_token
         }
 
-        response = httpx.post(f"{self.AUTH_URL}/api/token", headers=self.access_token_headers, params=refresh_token_data)
+        response = httpx.post(f"{self.AUTH_URL}/api/token", headers=self.access_token_headers, params=refresh_token_data, timeout=self.timeout)
         new_access_token = response.json()['access_token']
 
         json_data = {
@@ -191,10 +188,7 @@ class UserAccessToken(SpotifyOAuth):
     def __repr__(self) -> str:
         return self.access_token
 
-
-
 #<------SPOTIFY API ENDPOINT REQUESTS------>
-
 
 class SpotifyRequest:
     """Base class for sending requests to the Spotify API, used by child classes SpotifyGET and SpotifyPOST"""
@@ -203,12 +197,13 @@ class SpotifyRequest:
         self.API_URL = "https://api.spotify.com/v1"
         self.access_token = UserAccessToken()
         self.auth_headers = {'Authorization': f'Bearer {self.access_token}'}
+        self.timeout = httpx.Timeout(360.0, read=None)
     
     def get_request(self, url:str, params=None) -> httpx.Response:
         """
         Send a GET request to the Spotify Web API
         """
-        return httpx.get(url, headers=self.auth_headers, params=params) if params else httpx.get(url, headers=self.auth_headers)
+        return httpx.get(url, headers=self.auth_headers, params=params, timeout=self.timeout) if params else httpx.get(url, headers=self.auth_headers, timeout=self.timeout)
 
 
 class SpotifyGET(SpotifyRequest):
