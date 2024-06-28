@@ -5,6 +5,7 @@ from parsers.parse import username
 from parsers.album_parsers import print_albums
 from parsers.playlist_parsers import parse_featured, parse_print_playlists
 from parsers.artist_parser import parse_artist
+from parsers.recommended_parser import parse_recommendations
 
 from paginators.track_paginator import st_wrap
 from paginators.featured_tracktable import fs_wrap
@@ -18,6 +19,7 @@ parser.add_argument('-st', '--liked_songs', help="See all your liked songs", act
 parser.add_argument('-fs', '--featured_playlists', help='Discover playlists featured by Spotify', 
                     nargs="?", const='')
 parser.add_argument('-art', '--artist', help='Get information on a artist', nargs='?', const='')
+parser.add_argument("-frt", "--find_rectracks", help="Find recommended tracks from Spotify", action="store_true")
 
 args: Namespace = parser.parse_args()
 
@@ -56,4 +58,8 @@ if args.artist is not None:
     parse_artist(args.artist)
   else:
     print('Please type a artist name using mixmatch.py --art "artist name"')
+
+if args.find_rectracks:
+  os.system("cls")
+  parse_recommendations()
 
