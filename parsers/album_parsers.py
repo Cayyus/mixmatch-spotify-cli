@@ -4,6 +4,11 @@ from typing import Tuple
 from parsers.parse import api, hyperlink
 from shared.er import hide_error
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv('creds.env')
+
 try:
     albums = api.get_user_albums()
 except Exception as e:
@@ -26,7 +31,7 @@ def print_albums(specific_album=None) -> None:
           album_name, artist, tt_tracks, tracks = album_tuple
           print(f"{album_name} by {artist}")
           print(f"{tt_tracks} tracks")
-          print(f'See Tracks: python mixmatch.py --al "{album_name}"')
+          print(f'See Tracks: {os.environ.get("COMMAND_PREFIX")} --al "{album_name}"')
           print()
     
     
