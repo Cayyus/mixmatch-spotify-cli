@@ -10,6 +10,9 @@ from parsers.recommended_parser import parse_recommendations
 from paginators.track_paginator import st_wrap
 from paginators.featured_tracktable import fs_wrap
 
+from dotenv import load_dotenv
+
+load_dotenv('creds.env')
 
 parser = ArgumentParser()
 parser.add_argument('-al', '--albums', nargs='?', const='', 
@@ -28,7 +31,7 @@ if username is not None:
   print(f"Hello there, {username}.")
 else:
   print("Hello there!")
-print("Type python mixmatch.py -h to see all commands.")
+print(f"Type {os.environ.get('COMMAND_PREFIX')} -h to see all commands.")
 
 if args.albums is not None:
   os.system('cls') 
@@ -62,4 +65,3 @@ if args.artist is not None:
 if args.find_rectracks:
   os.system("cls")
   parse_recommendations()
-
