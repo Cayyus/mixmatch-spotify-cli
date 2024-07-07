@@ -10,10 +10,8 @@ Mixmatch is a command-line interface which allows users to interact with Spotify
 | Featured playlists from Spotify |✅|
 | Search artists and profile |✅|
 | Recommendations from Spotify |✅|
-| Play songs, playlist, album |🚧|
-| Pause, Resume, Replay songs |🚧|
-| Check playback, see song details, artists, album |🚧|
-| Go to previous song, next song, toggle repeat, shuffle |🚧|
+| View playlists, add to playlists, remove from playlists, create playlists |🚧|
+| View albums, add to albums, remove from albums, create albums |🚧|
 
 
 ## Get Started
