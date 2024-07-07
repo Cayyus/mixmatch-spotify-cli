@@ -18,80 +18,88 @@ class SpotifyGET(SpotifyRequest):
         """
         Get the albums saved by the user
         """
+        all_albums = []
+        next_url = f"{self.API_URL}/me/albums"
         params = {'limit': 50}
-        response = self.get_request(f"{self.API_URL}/me/albums", params=params)
-        data = response.json()
 
-        album_list = []
+        while next_url:
+            response = self.get_request(next_url, params=params)
+            data = response.json()
 
-        for album_info in data['items']:
-            album_data = {}
-            
-            dt = album_info['added_at']
-            dt = datetime.strptime(dt, "%Y-%m-%dT%H:%M:%SZ")
-            dt = dt.strftime("%Y-%m-%d %I:%M %p")
+            for album_info in data['items']:
+                album_data = {}
+                
+                dt = album_info['added_at']
+                dt = datetime.strptime(dt, "%Y-%m-%dT%H:%M:%SZ")
+                dt = dt.strftime("%Y-%m-%d %I:%M %p")
 
-            album_data['added_at'] = dt
-            album_data['album_api_url'] = album_info['album']['external_urls']['spotify']
-            album_data['album_name'] = album_info['album']['name']
-            album_data['artists'] = [artist['name'] for artist in album_info['album']['artists']]
-            album_data['release_date'] = album_info['album']['release_date']
-            album_data['total_tracks'] = album_info['album']['total_tracks']
+                album_data['added_at'] = dt
+                album_data['album_api_url'] = album_info['album']['external_urls']['spotify']
+                album_data['album_name'] = album_info['album']['name']
+                album_data['artists'] = [artist['name'] for artist in album_info['album']['artists']]
+                album_data['release_date'] = album_info['album']['release_date']
+                album_data['total_tracks'] = album_info['album']['total_tracks']
 
-            tracks_data = album_info['album']['tracks']['items']
-            album_data['tracks'] = []
+                tracks_data = album_info['album']['tracks']['items']
+                album_data['tracks'] = []
 
-            for track in tracks_data:
-                track_data = {}
-                track_data['track_name'] = track['name']
-                track_data['track_href'] = track['external_urls']['spotify']
-                track_data['artists'] = [artist['name'] for artist in track['artists']]
-                track_duration = track['duration_ms']
-                track_duration = track_duration / 60000 #convert to minutes
-                track_data['duration'] = round(track_duration)
+                for track in tracks_data:
+                    track_data = {}
+                    track_data['track_name'] = track['name']
+                    track_data['track_href'] = track['external_urls']['spotify']
+                    track_data['artists'] = [artist['name'] for artist in track['artists']]
+                    track_duration = track['duration_ms']
+                    track_duration = track_duration / 60000 # convert to minutes
+                    track_data['duration'] = round(track_duration)
 
+                    album_data['tracks'].append(track_data)
 
-                album_data['tracks'].append(track_data)
+                all_albums.append(album_data)
 
-            album_list.append(album_data)
+            # Check if there is a next page of albums
+            next_url = data.get('next')
 
-        return album_list
-    
+        return all_albums
+        
     def get_users_playlists(self) -> List[Dict]:
         """
         Get all the playlists saved by the user
         """
+        all_playlists = []
+        next_url = f"{self.API_URL}/me/playlists"
         params = {'limit': 50}
-        response = self.get_request(f"{self.API_URL}/me/playlists", params=params)
-        data = response.json()
 
-        playlists_list = []  # List to store playlists as dictionaries
+        while next_url:
+            response = self.get_request(next_url, params=params)
+            data = response.json()
 
-        for playlist in data['items']:
-            playlist_dict = {
-                'description': playlist['description'],
-                'external_urls': playlist['external_urls']['spotify'],
-                'href': playlist['href'],
-                'id': playlist['id'],
-                'name': playlist['name'],
-                'owner': {
-                    'display_name': playlist['owner']['display_name'],
-                    'external_urls': playlist['owner']['external_urls']['spotify'],
-                    'href': playlist['owner']['href'],
-                    'id': playlist['owner']['id'],
-                },
-                'primary_color': playlist['primary_color'],
-                'public': playlist['public'],
-                'tracks': {
-                    'href': playlist['tracks']['href'],
-                    'total': playlist['tracks']['total'],
-                },
-                'type': playlist['type'],
-            }
+            for playlist in data['items']:
+                playlist_dict = {
+                    'description': playlist['description'],
+                    'external_urls': playlist['external_urls']['spotify'],
+                    'href': playlist['href'],
+                    'id': playlist['id'],
+                    'name': playlist['name'],
+                    'owner': {
+                        'display_name': playlist['owner']['display_name'],
+                        'external_urls': playlist['owner']['external_urls']['spotify'],
+                        'href': playlist['owner']['href'],
+                        'id': playlist['owner']['id'],
+                    },
+                    'primary_color': playlist['primary_color'],
+                    'public': playlist['public'],
+                    'tracks': {
+                        'href': playlist['tracks']['href'],
+                        'total': playlist['tracks']['total'],
+                    },
+                    'type': playlist['type'],
+                }
 
-            playlists_list.append(playlist_dict)
+                all_playlists.append(playlist_dict)
 
-        return playlists_list
+            next_url = data.get('next')
+
+            return all_playlists
 
     def user_data(self) -> str:
         """
@@ -294,3 +302,4 @@ class SpotifyGET(SpotifyRequest):
             tracks_lst.append(track_dict)
         
         return tracks_lst
+
