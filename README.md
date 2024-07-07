@@ -11,7 +11,6 @@ Mixmatch is a command-line interface which allows users to interact with Spotify
 | Search artists and profile |✅|
 | Recommendations from Spotify |✅|
 | View playlists, add to playlists, remove from playlists, create playlists |🚧|
-| View albums, add to albums, remove from albums, create albums |🚧|
 
 
 ## Get Started
