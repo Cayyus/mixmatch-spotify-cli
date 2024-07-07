@@ -3,6 +3,11 @@ from tabulate import tabulate
 from parsers.parse import api, hyperlink
 from shared.er import hide_error
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv("creds.env")
+
 try:
     saved_playlists = api.get_users_playlists()
     featured_playlists = api.get_featured_playlists()
@@ -29,5 +34,5 @@ def parse_featured():
         print(f"Name: {hyperlink(pl['name'], pl['url'])}")
         print(f"Description: {pl['description']}")
         print(f"Tracks: {pl['tracks']}")
-        print(f'See tracks: python mixmatch.py -fs "{pl["name"]}"')
+        print(f'See tracks: {os.environ.get("COMMAND_PREFIX")} -fs "{pl["name"]}"')
         print()
