@@ -267,7 +267,7 @@ class SpotifyGET(SpotifyRequest):
 
         return artists_lst, tracks_lst
     
-    def get_recommendations(self) -> List[Dict]:
+    def get_recommendations(self, limit: int = 10) -> List[Dict]:
         """
         Get recommended tracks from Spotify for the user
         """
@@ -277,7 +277,7 @@ class SpotifyGET(SpotifyRequest):
         params = {
             "seed_artists": seed_artists,
             "seed_tracks": seed_tracks,
-            "limit": 10
+            "limit": limit
         }
 
         response = self.get_request(f"{self.API_URL}/recommendations", params=params)
