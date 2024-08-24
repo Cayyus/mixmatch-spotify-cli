@@ -64,5 +64,13 @@ if args.artist is not None:
     print('Please type a artist name using mixmatch.py --art "artist name"')
 
 if args.find_rectracks:
-  os.system("cls")
-  parse_recommendations()
+    os.system("cls")
+    from parsers.recommended_parser import parse_recommendations
+    if args.limit:
+        if not args.limit <= 0 or args.limit > 100:
+            parse_recommendations(args.limit)
+        else:
+            print("Limit must not be negative, 0 or greater than 100.")
+            exit()
+    else:
+        parse_recommendations()
