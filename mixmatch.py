@@ -23,6 +23,7 @@ parser.add_argument('-fs', '--featured_playlists', help='Discover playlists feat
                     nargs="?", const='')
 parser.add_argument('-art', '--artist', help='Get information on a artist', nargs='?', const='')
 parser.add_argument("-frt", "--find_rectracks", help="Find recommended tracks from Spotify", action="store_true")
+parser.add_argument("-l", "--limit", help="Specify number of songs to capture", type=int)
 
 args: Namespace = parser.parse_args()
 
