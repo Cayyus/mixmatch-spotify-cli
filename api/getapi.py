@@ -303,3 +303,34 @@ class SpotifyGET(SpotifyRequest):
         
         return tracks_lst
 
+
+    def search_user_playlists(self, playlist_name) -> Dict[int, Dict]:
+        """
+        Search for playlists owned by the user with a specific name and serialize them.
+        
+        Returns a dictionary where the keys are numbers and the values are dictionaries
+        containing playlist information.
+        """
+
+        all_playlists = []
+
+        next_url = f"{self.API_URL}/me/playlists"
+
+        while next_url:
+            response = self.get_request(next_url)
+            data = response.json()
+
+            for playlist in data['items']:
+                info_dict = {"name": playlist['name'], "url": playlist['external_urls']['spotify'], "id": playlist['id']}
+                all_playlists.append(info_dict)
+            
+            next_url = data.get('next')
+        
+        matching_playlists = [playlist for playlist in all_playlists if playlist_name.lower() in playlist['name'].lower()]
+        
+        serialized_playlists = {}
+        for i, playlist in enumerate(matching_playlists, 1):
+            serialized_playlists[i] = playlist
+
+        return serialized_playlists
+
