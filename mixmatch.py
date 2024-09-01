@@ -1,4 +1,4 @@
-fimport os
+import os
 from argparse import ArgumentParser, Namespace
 from dotenv import load_dotenv
 
