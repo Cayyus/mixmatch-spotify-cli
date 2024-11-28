@@ -2,6 +2,10 @@ import os
 from argparse import ArgumentParser, Namespace
 from dotenv import load_dotenv
 
+#TODO: VIEW A PLAYLIST, ADD TO A PLAYLIST, REMOVE FROM A PLAYLIST
+#TODO: MAYBE CONSIDER IMPLEMENTING LAZY IMPORT MODULE
+#TODO: DETECT AND REMOVE DUPLICATES IN PLAYLISTS
+
 load_dotenv('creds.env')
 
 parser = ArgumentParser()
@@ -13,6 +17,8 @@ parser.add_argument('-fs', '--featured_playlists', help='Discover playlists feat
                     nargs="?", const='')
 parser.add_argument('-art', '--artist', help='Get information on an artist', nargs='?', const='')
 parser.add_argument("-frt", "--find_rectracks", help="Find recommended tracks from Spotify", action="store_true")
+parser.add_argument("-srpl", "--search_playlist", help="Search a specific playlist you saved and see content", 
+                    nargs='?', const='')
 parser.add_argument("-l", "--limit", help="Specify number of songs to capture", type=int)
 
 args: Namespace = parser.parse_args()
@@ -71,3 +77,13 @@ if args.find_rectracks:
             exit()
     else:
         parse_recommendations()
+
+if args.search_playlist:
+    os.system("cls")
+    from parsers.playlist_parsers import parse_search_user
+    if args.search_playlist != '':
+        parse_search_user(args.search_playlist)
+    else:
+        print(f'Please type a playlist name using {os.environ.get("COMMAND_PREFIX")} -srpl "playlist name"')
+
+
