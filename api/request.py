@@ -19,3 +19,9 @@ class SpotifyRequest:
 
     def post_request(self, url:str, data) -> httpx.Response:
         return httpx.post(url, headers=self.auth_headers, json=data, timeout=self.timeout)
+
+    def put_request(self, url:str, data: dict) -> httpx.Response:
+        """
+        Send a PUT request to the Spotify Web API
+        """
+        return httpx.put(url, json=data, headers=self.auth_headers, timeout=self.timeout)
