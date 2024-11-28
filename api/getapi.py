@@ -20,10 +20,9 @@ class SpotifyGET(SpotifyRequest):
         """
         all_albums = []
         next_url = f"{self.API_URL}/me/albums"
-        params = {'limit': 50}
 
         while next_url:
-            response = self.get_request(next_url, params=params)
+            response = self.get_request(next_url)
             data = response.json()
 
             for album_info in data['items']:
@@ -67,10 +66,9 @@ class SpotifyGET(SpotifyRequest):
         """
         all_playlists = []
         next_url = f"{self.API_URL}/me/playlists"
-        params = {'limit': 50}
 
         while next_url:
-            response = self.get_request(next_url, params=params)
+            response = self.get_request(next_url)
             data = response.json()
 
             for playlist in data['items']:
@@ -99,7 +97,7 @@ class SpotifyGET(SpotifyRequest):
 
             next_url = data.get('next')
 
-            return all_playlists
+        return all_playlists
 
     def user_data(self) -> str:
         """
@@ -302,8 +300,7 @@ class SpotifyGET(SpotifyRequest):
             tracks_lst.append(track_dict)
         
         return tracks_lst
-
-
+    
     def search_user_playlists(self, playlist_name) -> Dict[int, Dict]:
         """
         Search for playlists owned by the user with a specific name and serialize them.
@@ -333,4 +330,44 @@ class SpotifyGET(SpotifyRequest):
             serialized_playlists[i] = playlist
 
         return serialized_playlists
+    
+    def get_playlist_details(self, playlist_id) -> Dict:
+        """
+        Get the details of a playlist
+        """
+        response = self.get_request(f"{self.API_URL}/playlists/{playlist_id}")
+        data = response.json()
+        playlist_details = {}
+        name = data['name']
+        url = data['external_urls']['spotify']
+        tracks_total = data['tracks']['total']
+        followers = data['followers']['total']
+        owner_name = data['owner']['display_name'] if data['owner']['display_name'] is not None else None
+        owner_url = data['owner']['external_urls']['spotify']
 
+        playlist_details['name'] = name
+        playlist_details['url'] = url
+        playlist_details['tracks'] = tracks_total
+        playlist_details['followers'] = followers
+        playlist_details['owner_name'] = owner_name
+        playlist_details['owner_url'] = owner_url 
+
+        return playlist_details
+
+    def get_playlist_content(self, playlist_id) -> List[Dict]:
+        """
+        Get the content of a playlist
+        """
+        next_url = f"{self.API_URL}/playlists/{playlist_id}/tracks"
+        tracks_items = []
+
+        while next_url:
+            response = self.get_request(next_url, params={'limit': 100})
+            data = response.json()
+
+            next_url = data.get("next")
+
+            items = data.get('items', [])
+            tracks_items.extend(items)
+
+        return {"items": tracks_items}
