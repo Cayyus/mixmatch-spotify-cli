@@ -1,3 +1,6 @@
+# Update as of 28 November 2024
+Effective from now, the Mixmatch Spotify CLI will cease all development and be deprecated, this is following [new changes to the Spotify API](https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api) which deprecated several endpoints, effectively breaking many of the features that this CLI relies on. This includes recommendation of tracks, related artist information and featured playlists. It's sad to have come to this, over a year of development being reduced to nothing. All current development features will be posted anyway to this repo, in case Spotify changes course, this repo will remain unlocked. It's been a journey developing this CLI, and I really hope Spotify reconsiders so I can develop this again.
+
 # MixMatch
 Mixmatch is a command-line interface which allows users to interact with Spotify from the terminal. <br>
 
